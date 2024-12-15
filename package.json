@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "type": "module",
   "author": {
-    "name": "Hỏi Dân IT vs Eric",
-    "url": "https://hoidanit.vn"
+    "name": "Ghost",
+    "url": ""
   },
   "scripts": {
     "dev": "vite",
@@ -16,7 +16,8 @@
   },
   "dependencies": {
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "react-router-dom": "6.27.0"
   },
   "devDependencies": {
     "@eslint/js": "9.12.0",
