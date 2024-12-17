@@ -15,4 +15,21 @@ declare global {
         },
         results: T[]
     }
+    interface ILogin {
+        access_token: string;
+        user: {
+            email: string;
+            phone: string;
+            fullName: string;
+            role: string;
+            avatar: string;
+            id: string;
+        }
+    }
+
+    interface IRegister {
+        _id: string;
+        email: string;
+        fullName: string;
+    }
 }
