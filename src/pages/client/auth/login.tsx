@@ -12,7 +12,7 @@ type FieldType = {
 
 const LoginPage = () => {
     const [isSubmit, setIsSubmit] = useState(false);
-    const { message } = App.useApp();
+    const { message, notification } = App.useApp();
     const navigate = useNavigate();
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
@@ -20,15 +20,19 @@ const LoginPage = () => {
         const { userName, password } = values;
 
         const res = await loginAPI(userName, password);
-        if (res.data) {
+        if (res?.data) {
+            localStorage.setItem('access_token', res.data.access_token);
             //success
             message.success("Đăng nhập thành công.")
             navigate("/")
         } else {
-            //error
-            message.error(res.message)
+            notification.error({
+                message: "Có lỗi xảy ra",
+                description:
+                    res.message && Array.isArray(res.message) ? res.message[0] : res.message,
+                duration: 5
+            })
         }
-        setIsSubmit(false);
     };
 
     return (
