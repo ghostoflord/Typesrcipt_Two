@@ -1,9 +1,11 @@
 import { Button, Result } from "antd";
 import { useCurrentApp } from "components/context/app.context";
 import { useLocation } from "react-router-dom";
+
 interface IProps {
     children: React.ReactNode
 }
+
 const ProtectedRoute = (props: IProps) => {
     const { isAuthenticated, user } = useCurrentApp();
     const location = useLocation();
@@ -17,6 +19,7 @@ const ProtectedRoute = (props: IProps) => {
             />
         )
     }
+
     const isAdminRoute = location.pathname.includes("admin");
     if (isAuthenticated === true && isAdminRoute === true) {
         const role = user?.role;
@@ -31,10 +34,12 @@ const ProtectedRoute = (props: IProps) => {
             )
         }
     }
+
     return (
         <>
             {props.children}
         </>
     )
 }
+
 export default ProtectedRoute;

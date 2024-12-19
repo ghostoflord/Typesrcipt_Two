@@ -2,8 +2,8 @@ import { Outlet } from "react-router-dom";
 import AppHeader from "./components/layout/app.header";
 import { useEffect } from "react";
 import { fetchAccountAPI } from "services/api";
-import { useCurrentApp } from "./components/context/app.context";
-import { PacmanLoader } from "react-spinners";
+import { useCurrentApp } from "components/context/app.context";
+import PacmanLoader from "react-spinners/PacmanLoader";
 
 function Layout() {
   const { setUser, isAppLoading, setIsAppLoading, setIsAuthenticated } = useCurrentApp();
@@ -12,7 +12,7 @@ function Layout() {
     const fetchAccount = async () => {
       const res = await fetchAccountAPI();
       if (res.data) {
-        setUser(res.data.user)
+        setUser(res.data.user);
         setIsAuthenticated(true);
       }
       setIsAppLoading(false)
@@ -44,4 +44,4 @@ function Layout() {
   )
 }
 
-export default Layout
+export default Layout;

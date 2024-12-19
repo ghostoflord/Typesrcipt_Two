@@ -1,10 +1,9 @@
-import { App, Button, Divider, Form, Input } from 'antd';
+import { Button, Divider, Form, Input, App } from 'antd';
 import type { FormProps } from 'antd';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './register.scss';
 import { registerAPI } from '@/services/api';
-
 
 type FieldType = {
   fullName: string;

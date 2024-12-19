@@ -1,34 +1,33 @@
 import { App, Button, Divider, Form, Input } from 'antd';
-import type { FormProps } from 'antd';
-import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './login.scss';
+import { useState } from 'react';
+import type { FormProps } from 'antd';
 import { loginAPI } from '@/services/api';
 import { useCurrentApp } from '@/components/context/app.context';
 
 type FieldType = {
-    userName: string;
+    username: string;
     password: string;
 };
 
 const LoginPage = () => {
+    const navigate = useNavigate();
     const [isSubmit, setIsSubmit] = useState(false);
     const { message, notification } = App.useApp();
-    const navigate = useNavigate();
     const { setIsAuthenticated, setUser } = useCurrentApp();
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+        const { username, password } = values;
         setIsSubmit(true);
-        const { userName, password } = values;
-
-        const res = await loginAPI(userName, password);
+        const res = await loginAPI(username, password);
+        setIsSubmit(false);
         if (res?.data) {
             setIsAuthenticated(true);
             setUser(res.data.user)
             localStorage.setItem('access_token', res.data.access_token);
-            //success
-            message.success("Đăng nhập thành công.")
-            navigate("/")
+            message.success('Đăng nhập tài khoản thành công!');
+            navigate('/')
         } else {
             notification.error({
                 message: "Có lỗi xảy ra",
@@ -39,25 +38,30 @@ const LoginPage = () => {
         }
     };
 
+
     return (
         <div className="login-page">
             <main className="main">
                 <div className="container">
                     <section className="wrapper">
                         <div className="heading">
-                            <h2 className="text text-large">Đăng Nhập Tài Khoản</h2>
+                            <h2 className="text text-large">Đăng Nhập</h2>
                             <Divider />
+
                         </div>
                         <Form
-                            name="form-register"
+                            name="login-form"
                             onFinish={onFinish}
                             autoComplete="off"
                         >
                             <Form.Item<FieldType>
                                 labelCol={{ span: 24 }} //whole column
                                 label="Email"
-                                name="userName"
-                                rules={[{ required: true, message: 'Email không được để trống!' }]}
+                                name="username"
+                                rules={[
+                                    { required: true, message: 'Email không được để trống!' },
+                                    { type: "email", message: "Email không đúng định dạng!" }
+                                ]}
                             >
                                 <Input />
                             </Form.Item>
@@ -80,9 +84,10 @@ const LoginPage = () => {
                             <p className="text text-normal" style={{ textAlign: "center" }}>
                                 Chưa có tài khoản ?
                                 <span>
-                                    <Link to='/register' > Đăng KýKý </Link>
+                                    <Link to='/register' > Đăng Ký </Link>
                                 </span>
                             </p>
+                            <br />
                         </Form>
                     </section>
                 </div>

@@ -1,4 +1,5 @@
 export { };
+
 declare global {
     interface IBackendRes<T> {
         error?: string | string[];
@@ -6,6 +7,7 @@ declare global {
         statusCode: number | string;
         data?: T;
     }
+
     interface IModelPaginate<T> {
         meta: {
             current: number;
@@ -15,6 +17,7 @@ declare global {
         },
         results: T[]
     }
+
     interface ILogin {
         access_token: string;
         user: {
@@ -32,6 +35,7 @@ declare global {
         email: string;
         fullName: string;
     }
+
     interface IUser {
         email: string;
         phone: string;
@@ -40,7 +44,9 @@ declare global {
         avatar: string;
         id: string;
     }
+
     interface IFetchAccount {
         user: IUser
     }
+
 }
