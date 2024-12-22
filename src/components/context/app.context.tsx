@@ -51,7 +51,7 @@ export const AppProvider = (props: TProps) => {
                     transform: "translate(-50%, -50%)"
                 }}>
                     <HashLoader
-                        size={30}
+                        size={60}
                         color="#36d6b4"
                     />
                 </div>
