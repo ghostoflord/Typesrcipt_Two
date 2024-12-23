@@ -108,6 +108,10 @@ const TableUser = () => {
                         }
 
                     }
+                    if (sort && sort.createdAt) {
+                        query += `&sort=${sort.createdAt === "ascend" ? "createdAt" : "-createdAt"}`
+                    }
+
 
                     const res = await getUsersAPI(query);
                     if (res.data) {
