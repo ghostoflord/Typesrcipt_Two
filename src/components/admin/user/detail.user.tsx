@@ -1,5 +1,5 @@
 import { FORMATE_DATE_VN } from "@/services/helper";
-import { Badge, Descriptions, Drawer } from "antd";
+import { Avatar, Badge, Descriptions, Drawer } from "antd";
 import dayjs from 'dayjs';
 interface IProps {
     openViewDetail: boolean;
@@ -9,6 +9,7 @@ interface IProps {
 }
 const DetailUser = (props: IProps) => {
     const { openViewDetail, setOpenViewDetail, dataViewDetail, setDataViewDetail } = props;
+    const avatarURL = `${import.meta.env.VITE_BACKEND_URL}/images/avatar/${dataViewDetail?.avatar}`
     const onClose = () => {
         setOpenViewDetail(false);
         setDataViewDetail(null);
@@ -32,6 +33,9 @@ const DetailUser = (props: IProps) => {
                     <Descriptions.Item label="Số điện thoại">{dataViewDetail?.phone}</Descriptions.Item>
                     <Descriptions.Item label="Role" span={2}>
                         <Badge status="processing" text={dataViewDetail?.role} />
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Avatar">
+                        <Avatar size={40} src={avatarURL}></Avatar>
                     </Descriptions.Item>
                     <Descriptions.Item label="Created At">
                         {dayjs(dataViewDetail?.createdAt).format(FORMATE_DATE_VN)}
