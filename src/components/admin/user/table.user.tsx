@@ -28,8 +28,11 @@ const TableUser = () => {
 
     const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
     const [dataViewDetail, setDataViewDetail] = useState<IUserTable | null>(null);
+
     const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
     const [openModalImport, setOpenModalImport] = useState<boolean>(false);
+
+
     const columns: ProColumns<IUserTable>[] = [
         {
             dataIndex: 'index',
@@ -89,6 +92,7 @@ const TableUser = () => {
                             style={{ cursor: "pointer" }}
                         />
                     </>
+
                 )
             }
         }
@@ -99,7 +103,6 @@ const TableUser = () => {
         actionRef.current?.reload();
     }
 
-
     return (
         <>
             <ProTable<IUserTable, TSearch>
@@ -108,7 +111,6 @@ const TableUser = () => {
                 cardBordered
                 request={async (params, sort, filter) => {
                     console.log(params, sort, filter);
-
                     let query = "";
                     if (params) {
                         query += `current=${params.current}&pageSize=${params.pageSize}`
@@ -126,6 +128,7 @@ const TableUser = () => {
 
                     }
 
+                    //default
                     query += `&sort=-createdAt`;
 
                     if (sort && sort.createdAt) {
@@ -163,6 +166,7 @@ const TableUser = () => {
                     >
                         Export
                     </Button>,
+
                     <Button
                         icon={<CloudUploadOutlined />}
                         type="primary"
@@ -170,11 +174,11 @@ const TableUser = () => {
                     >
                         Import
                     </Button>,
+
                     <Button
                         key="button"
                         icon={<PlusOutlined />}
                         onClick={() => {
-                            actionRef.current?.reload();
                             setOpenModalCreate(true);
                         }}
                         type="primary"
@@ -190,14 +194,17 @@ const TableUser = () => {
                 dataViewDetail={dataViewDetail}
                 setDataViewDetail={setDataViewDetail}
             />
+
             <CreateUser
                 openModalCreate={openModalCreate}
                 setOpenModalCreate={setOpenModalCreate}
                 refreshTable={refreshTable}
             />
+
             <ImportUser
                 openModalImport={openModalImport}
                 setOpenModalImport={setOpenModalImport}
+                refreshTable={refreshTable}
             />
         </>
     );
