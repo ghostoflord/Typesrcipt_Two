@@ -48,3 +48,9 @@ export const bulkCreateUserAPI = (ghost: {
     const urlBackend = "/api/v1/user/bulk-create";
     return axios.post<IBackendRes<IResponseImport>>(urlBackend, ghost)
 }
+
+export const updateUserAPI = (_id: string, fullName: string, phone: string) => {
+    const urlBackend = "/api/v1/user";
+    return axios.put<IBackendRes<IRegister>>(urlBackend,
+        { _id, fullName, phone })
+}

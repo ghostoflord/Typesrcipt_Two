@@ -9,6 +9,7 @@ import DetailUser from './detail.user';
 import CreateUser from './create.use';
 import ImportUser from './import.user';
 import { CSVLink } from "react-csv";
+import UpdateUser from './update.user';
 
 type TSearch = {
     fullName: string;
@@ -31,7 +32,11 @@ const TableUser = () => {
 
     const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
     const [openModalImport, setOpenModalImport] = useState<boolean>(false);
+
     const [currentDataTable, setCurrentDataTable] = useState<IUserTable[]>([]);
+
+    const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
+    const [dataUpdate, setDataUpdate] = useState<IUserTable | null>(null);
 
 
     const columns: ProColumns<IUserTable>[] = [
@@ -87,6 +92,10 @@ const TableUser = () => {
                         <EditTwoTone
                             twoToneColor="#f57800"
                             style={{ cursor: "pointer", marginRight: 15 }}
+                            onClick={() => {
+                                setDataUpdate(entity);
+                                setOpenModalUpdate(true);
+                            }}
                         />
                         <DeleteTwoTone
                             twoToneColor="#ff4d4f"
@@ -211,6 +220,13 @@ const TableUser = () => {
                 openModalImport={openModalImport}
                 setOpenModalImport={setOpenModalImport}
                 refreshTable={refreshTable}
+            />
+            <UpdateUser
+                openModalUpdate={openModalUpdate}
+                setOpenModalUpdate={setOpenModalUpdate}
+                refreshTable={refreshTable}
+                setDataUpdate={setDataUpdate}
+                dataUpdate={dataUpdate}
             />
         </>
     );
