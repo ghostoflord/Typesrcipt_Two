@@ -5,6 +5,7 @@ import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { Button, Popconfirm } from 'antd';
 import { useRef, useState } from 'react';
+import DetailBook from './detail.book';
 
 type TSearch = {
     mainText: string;
@@ -16,6 +17,12 @@ type TSearch = {
 }
 
 const TableBook = () => {
+    // detail
+
+    const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
+    const [dataViewDetail, setDataViewDetail] = useState<IBookTable | null>(null);
+
+
     const actionRef = useRef<ActionType>();
     const [meta, setMeta] = useState({
         current: 1,
@@ -33,6 +40,8 @@ const TableBook = () => {
                 return (
                     <a
                         onClick={() => {
+                            setDataViewDetail(entity);
+                            setOpenViewDetail(true);
                         }}
                         href='#'>{entity._id}</a>
                 )
@@ -51,8 +60,19 @@ const TableBook = () => {
             dataIndex: 'author',
         },
         {
-            title: 'Giá Tiền',
+            title: 'Giá tiền',
             dataIndex: 'price',
+            hideInSearch: true,
+            sorter: true,
+            // https://stackoverflow.com/questions/37985642/vnd-currency-formatting
+            render(dom, entity) {
+                return (
+                    <>{new Intl.NumberFormat(
+                        'vi-VN',
+                        { style: 'currency', currency: 'VND' }).format(entity.price)}
+                    </>
+                )
+            }
         },
 
         {
@@ -184,7 +204,12 @@ const TableBook = () => {
 
                 ]}
             />
-
+            <DetailBook
+                openViewDetail={openViewDetail}
+                setOpenViewDetail={setOpenViewDetail}
+                dataViewDetail={dataViewDetail}
+                setDataViewDetail={setDataViewDetail}
+            />
         </>
     );
 };
