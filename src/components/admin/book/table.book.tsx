@@ -1,16 +1,15 @@
 
 import { useRef, useState } from 'react';
-import { Popconfirm, Button } from 'antd';
+import { Popconfirm, Button, App } from 'antd';
 import { DeleteTwoTone, EditTwoTone, ExportOutlined, PlusOutlined } from '@ant-design/icons';
+import DetailBook from './detail.book';
 import { CSVLink } from 'react-csv';
 import { ProTable } from '@ant-design/pro-components';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { dateRangeValidate } from '@/services/helper';
-import { getBooksAPI } from '@/services/api';
-import DetailBook from './detail.book';
+import { deleteBookAPI, getBooksAPI } from '@/services/api';
 import CreateBook from './create.book';
 import UpdateBook from './update.book';
-
 
 
 type TSearch = {
@@ -42,24 +41,24 @@ const TableBook = () => {
     const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
     const [dataUpdate, setDataUpdate] = useState<IBookTable | null>(null);
 
-    // const [isDeleteBook, setIsDeleteBook] = useState<boolean>(false);
-    // const { message, notification } = App.useApp();
+    const [isDeleteBook, setIsDeleteBook] = useState<boolean>(false);
+    const { message, notification } = App.useApp();
 
 
-    // const handleDeleteBook = async (_id: string) => {
-    //     setIsDeleteBook(true)
-    // const res = await deleteUserAPI(_id);
-    // if (res && res.data) {
-    //     message.success('Xóa book thành công');
-    //     refreshTable();
-    // } else {
-    //     notification.error({
-    //         message: 'Đã có lỗi xảy ra',
-    //         description: res.message
-    //     })
-    // }
-    //     setIsDeleteBook(false)
-    // }
+    const handleDeleteBook = async (_id: string) => {
+        setIsDeleteBook(true)
+        const res = await deleteBookAPI(_id);
+        if (res && res.data) {
+            message.success('Xóa book thành công');
+            refreshTable();
+        } else {
+            notification.error({
+                message: 'Đã có lỗi xảy ra',
+                description: res.message
+            })
+        }
+        setIsDeleteBook(false)
+    }
 
     const refreshTable = () => {
         actionRef.current?.reload();
@@ -70,7 +69,7 @@ const TableBook = () => {
             title: 'Id',
             dataIndex: '_id',
             hideInSearch: true,
-            render(dom, entity) {
+            render(dom, entity, index, action, schema) {
                 return (
                     <a href='#' onClick={() => {
                         setDataViewDetail(entity);
@@ -101,7 +100,7 @@ const TableBook = () => {
             hideInSearch: true,
             sorter: true,
             // https://stackoverflow.com/questions/37985642/vnd-currency-formatting
-            render(dom, entity) {
+            render(dom, entity, index, action, schema) {
                 return (
                     <>{new Intl.NumberFormat(
                         'vi-VN',
@@ -121,11 +120,11 @@ const TableBook = () => {
         {
             title: 'Action',
             hideInSearch: true,
-            render(dom, entity) {
+            render(dom, entity, index, action, schema) {
                 return (
                     <>
                         <EditTwoTone
-                            twoToneColor="#f57800" style={{ cursor: "pointer", margin: "0 5px" }}
+                            twoToneColor="#f57800" style={{ cursor: "pointer", margin: "0 10px" }}
                             onClick={() => {
                                 setOpenModalUpdate(true);
                                 setDataUpdate(entity);
@@ -136,10 +135,10 @@ const TableBook = () => {
                             placement="leftTop"
                             title={"Xác nhận xóa book"}
                             description={"Bạn có chắc chắn muốn xóa book này ?"}
-                            // onConfirm={() => handleDeleteBook(entity._id)}
+                            onConfirm={() => handleDeleteBook(entity._id)}
                             okText="Xác nhận"
                             cancelText="Hủy"
-                        // okButtonProps={{ loading: isDeleteBook }}
+                            okButtonProps={{ loading: isDeleteBook }}
                         >
                             <span style={{ cursor: "pointer" }}>
                                 <DeleteTwoTone twoToneColor="#ff4d4f" />
@@ -160,7 +159,7 @@ const TableBook = () => {
                 columns={columns}
                 actionRef={actionRef}
                 cardBordered
-                request={async (params, sort) => {
+                request={async (params, sort, filter) => {
                     let query = "";
                     if (params) {
                         query += `current=${params.current}&pageSize=${params.pageSize}`
@@ -220,17 +219,18 @@ const TableBook = () => {
 
                 headerTitle="Table book"
                 toolBarRender={() => [
-                    <Button
-                        icon={<ExportOutlined />}
-                        type="primary"
+                    <CSVLink
+                        data={currentDataTable}
+                        filename='export-book.csv'
                     >
-                        <CSVLink
-                            data={currentDataTable}
-                            filename='export-book.csv'
+                        <Button
+                            icon={<ExportOutlined />}
+                            type="primary"
                         >
                             Export
-                        </CSVLink>
-                    </Button>,
+                        </Button>
+                    </CSVLink >
+                    ,
 
                     <Button
                         key="button"
@@ -245,7 +245,7 @@ const TableBook = () => {
                 ]}
             />
 
-            <DetailBook
+            < DetailBook
                 openViewDetail={openViewDetail}
                 setOpenViewDetail={setOpenViewDetail}
                 dataViewDetail={dataViewDetail}
@@ -257,12 +257,13 @@ const TableBook = () => {
                 setOpenModalCreate={setOpenModalCreate}
                 refreshTable={refreshTable}
             />
+
             <UpdateBook
                 openModalUpdate={openModalUpdate}
                 setOpenModalUpdate={setOpenModalUpdate}
                 refreshTable={refreshTable}
-                setDataUpdate={setDataUpdate}
                 dataUpdate={dataUpdate}
+                setDataUpdate={setDataUpdate}
             />
         </>
     )
