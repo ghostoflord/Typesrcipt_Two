@@ -6,6 +6,7 @@ import { ProTable } from '@ant-design/pro-components';
 import { Button, Popconfirm } from 'antd';
 import { useRef, useState } from 'react';
 import DetailBook from './detail.book';
+import CreateBook from './create.book';
 
 type TSearch = {
     mainText: string;
@@ -17,11 +18,13 @@ type TSearch = {
 }
 
 const TableBook = () => {
-    // detail
 
+    // detail
     const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
     const [dataViewDetail, setDataViewDetail] = useState<IBookTable | null>(null);
 
+    //create
+    const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
 
     const actionRef = useRef<ActionType>();
     const [meta, setMeta] = useState({
@@ -195,7 +198,7 @@ const TableBook = () => {
                         key="button"
                         icon={<PlusOutlined />}
                         onClick={() => {
-                            // setOpenModalCreate(true);
+                            setOpenModalCreate(true);
                         }}
                         type="primary"
                     >
@@ -209,6 +212,10 @@ const TableBook = () => {
                 setOpenViewDetail={setOpenViewDetail}
                 dataViewDetail={dataViewDetail}
                 setDataViewDetail={setDataViewDetail}
+            />
+            <CreateBook
+                openModalCreate={openModalCreate}
+                setOpenModalCreate={setOpenModalCreate}
             />
         </>
     );
