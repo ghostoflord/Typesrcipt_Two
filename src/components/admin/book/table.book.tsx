@@ -9,6 +9,7 @@ import { dateRangeValidate } from '@/services/helper';
 import { getBooksAPI } from '@/services/api';
 import DetailBook from './detail.book';
 import CreateBook from './create.book';
+import UpdateBook from './update.book';
 
 
 
@@ -38,8 +39,8 @@ const TableBook = () => {
 
     const [currentDataTable, setCurrentDataTable] = useState<IBookTable[]>([]);
 
-    // const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
-    // const [dataUpdate, setDataUpdate] = useState<IBookTable | null>(null);
+    const [openModalUpdate, setOpenModalUpdate] = useState<boolean>(false);
+    const [dataUpdate, setDataUpdate] = useState<IBookTable | null>(null);
 
     // const [isDeleteBook, setIsDeleteBook] = useState<boolean>(false);
     // const { message, notification } = App.useApp();
@@ -126,8 +127,8 @@ const TableBook = () => {
                         <EditTwoTone
                             twoToneColor="#f57800" style={{ cursor: "pointer", margin: "0 5px" }}
                             onClick={() => {
-                                // setOpenModalUpdate(true);
-                                // setDataUpdate(entity);
+                                setOpenModalUpdate(true);
+                                setDataUpdate(entity);
                             }}
                         />
 
@@ -255,6 +256,13 @@ const TableBook = () => {
                 openModalCreate={openModalCreate}
                 setOpenModalCreate={setOpenModalCreate}
                 refreshTable={refreshTable}
+            />
+            <UpdateBook
+                openModalUpdate={openModalUpdate}
+                setOpenModalUpdate={setOpenModalUpdate}
+                refreshTable={refreshTable}
+                setDataUpdate={setDataUpdate}
+                dataUpdate={dataUpdate}
             />
         </>
     )
