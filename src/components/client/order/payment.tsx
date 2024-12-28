@@ -1,25 +1,35 @@
-import { Col, Divider, Form, Radio, Row, Space } from 'antd';
+import { App, Button, Col, Divider, Form, Radio, Row, Space } from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { Input } from 'antd';
 import { useCurrentApp } from '@/components/context/app.context';
 import type { FormProps } from 'antd';
+import { createOrderAPI } from '@/services/api';
+
 const { TextArea } = Input;
+
 type UserMethod = "COD" | "BANKING";
+
 type FieldType = {
     fullName: string;
     phone: string;
     address: string;
     method: UserMethod;
 };
+
 interface IProps {
     setCurrentStep: (v: number) => void;
 }
 const Payment = (props: IProps) => {
     const { carts, setCarts, user } = useCurrentApp();
     const [totalPrice, setTotalPrice] = useState(0);
+
     const [form] = Form.useForm();
+
     const [isSubmit, setIsSubmit] = useState(false);
+    const { message, notification } = App.useApp();
+    const { setCurrentStep } = props;
+
     useEffect(() => {
         if (user) {
             form.setFieldsValue({
@@ -29,6 +39,7 @@ const Payment = (props: IProps) => {
             })
         }
     }, [user])
+
     useEffect(() => {
         if (carts && carts.length > 0) {
             let sum = 0;
@@ -40,6 +51,8 @@ const Payment = (props: IProps) => {
             setTotalPrice(0);
         }
     }, [carts]);
+
+
     const handleRemoveBook = (_id: string) => {
         const cartStorage = localStorage.getItem("carts");
         if (cartStorage) {
@@ -51,9 +64,36 @@ const Payment = (props: IProps) => {
             setCarts(newCarts);
         }
     }
+
     const handlePlaceOrder: FormProps<FieldType>['onFinish'] = async (values) => {
-        console.log(values)
+        const { address, fullName, method, phone } = values;
+        const detail = carts.map(item => ({
+            _id: item._id,
+            quantity: item.quantity,
+            bookName: item.detail.mainText
+        }))
+
+        setIsSubmit(true);
+        const res = await createOrderAPI(
+            fullName, address, phone, totalPrice, method, detail
+        );
+        if (res?.data) {
+            localStorage.removeItem("carts");
+            setCarts([]);
+            message.success('Mua hàng thành công!');
+            setCurrentStep(2);
+        } else {
+            notification.error({
+                message: "Có lỗi xảy ra",
+                description:
+                    res.message && Array.isArray(res.message) ? res.message[0] : res.message,
+                duration: 5
+            })
+        }
+
+        setIsSubmit(false);
     }
+
     return (
         <Row gutter={[20, 20]}>
             <Col md={16} xs={24}>
@@ -82,13 +122,14 @@ const Payment = (props: IProps) => {
                                     onClick={() => handleRemoveBook(book._id)}
                                     twoToneColor="#eb2f96"
                                 />
+
                             </div>
                         </div>
                     )
                 })}
                 <div><span
                     style={{ cursor: "pointer" }}
-                    onClick={() => props.setCurrentStep(0)}>
+                    onClick={() => setCurrentStep(0)}>
                     Quay trở lại
                 </span>
                 </div>
@@ -113,6 +154,7 @@ const Payment = (props: IProps) => {
                                 </Space>
                             </Radio.Group>
                         </Form.Item>
+
                         <Form.Item<FieldType>
                             label="Họ tên"
                             name="fullName"
@@ -122,6 +164,7 @@ const Payment = (props: IProps) => {
                         >
                             <Input />
                         </Form.Item>
+
                         <Form.Item<FieldType>
                             label="Số điện thoại"
                             name="phone"
@@ -131,6 +174,7 @@ const Payment = (props: IProps) => {
                         >
                             <Input />
                         </Form.Item>
+
                         <Form.Item<FieldType>
                             label="Địa chỉ nhận hàng"
                             name="address"
@@ -140,6 +184,7 @@ const Payment = (props: IProps) => {
                         >
                             <TextArea rows={4} />
                         </Form.Item>
+
                         <div className='calculate'>
                             <span>  Tạm tính</span>
                             <span>
@@ -154,11 +199,19 @@ const Payment = (props: IProps) => {
                             </span>
                         </div>
                         <Divider style={{ margin: "10px 0" }} />
-                        <button type="submit">Đặt Hàng ({carts?.length ?? 0})</button>
+                        <Button
+                            color="danger" variant="solid"
+                            htmlType='submit'
+                            loading={isSubmit}
+                        >
+                            Đặt Hàng ({carts?.length ?? 0})
+                        </Button>
                     </div>
                 </Form>
+
             </Col>
         </Row>
     )
 }
+
 export default Payment;
