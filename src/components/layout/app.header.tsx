@@ -9,11 +9,14 @@ import './app.header.scss';
 import { Link } from 'react-router-dom';
 import { useCurrentApp } from 'components/context/app.context';
 import { logoutAPI } from '@/services/api';
+import ManageAccount from '../client/account';
 
 const AppHeader = (props: any) => {
     const [openDrawer, setOpenDrawer] = useState(false);
 
     const { isAuthenticated, user, setUser, setIsAuthenticated, carts } = useCurrentApp();
+
+    const [openManageAccount, setOpenManageAccount] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -31,7 +34,7 @@ const AppHeader = (props: any) => {
         {
             label: <label
                 style={{ cursor: 'pointer' }}
-                onClick={() => alert("me")}
+                onClick={() => setOpenManageAccount(true)}
             >Quản lý tài khoản</label>,
             key: 'account',
         },
@@ -158,6 +161,12 @@ const AppHeader = (props: any) => {
                 <p onClick={() => handleLogout()}>Đăng xuất</p>
                 <Divider />
             </Drawer>
+
+
+            <ManageAccount
+                isModalOpen={openManageAccount}
+                setIsModalOpen={setOpenManageAccount}
+            />
 
         </>
     )
