@@ -1,7 +1,9 @@
+import TableOrder from "@/components/admin/dashboard/order";
+
 const ManageOrderPage = () => {
     return (
         <div>
-            ManageOrderPage
+            <TableOrder />
         </div>
     )
 }
