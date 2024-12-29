@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { FaReact } from 'react-icons/fa'
 import { FiShoppingCart } from 'react-icons/fi';
@@ -10,13 +11,21 @@ import { Link } from 'react-router-dom';
 import { useCurrentApp } from 'components/context/app.context';
 import { logoutAPI } from '@/services/api';
 import ManageAccount from '../client/account';
+import { isMobile } from 'react-device-detect';
 
-const AppHeader = (props: any) => {
+interface IProps {
+    searchTerm: string;
+    setSearchTerm: (v: string) => void;
+}
+
+const AppHeader = (props: IProps) => {
     const [openDrawer, setOpenDrawer] = useState(false);
-
-    const { isAuthenticated, user, setUser, setIsAuthenticated, carts } = useCurrentApp();
-
     const [openManageAccount, setOpenManageAccount] = useState<boolean>(false);
+
+    const {
+        isAuthenticated, user, setUser, setIsAuthenticated,
+        carts, setCarts
+    } = useCurrentApp();
 
     const navigate = useNavigate();
 
@@ -25,8 +34,10 @@ const AppHeader = (props: any) => {
         const res = await logoutAPI();
         if (res.data) {
             setUser(null);
+            setCarts([]);
             setIsAuthenticated(false);
             localStorage.removeItem("access_token");
+            localStorage.removeItem("carts");
         }
     }
 
@@ -63,8 +74,7 @@ const AppHeader = (props: any) => {
     const contentPopover = () => {
         return (
             <div className='pop-cart-body'>
-                <div className='pop-cart-content'></div>
-                {/* <div className='pop-cart-content'>
+                <div className='pop-cart-content'>
                     {carts?.map((book, index) => {
                         return (
                             <div className='book' key={`book-${index}`}>
@@ -85,11 +95,11 @@ const AppHeader = (props: any) => {
                     <Empty
                         description="Không có sản phẩm trong giỏ hàng"
                     />
-                } */
                 }
             </div>
         )
     }
+
     return (
         <>
             <div className='header-container'>
@@ -100,15 +110,15 @@ const AppHeader = (props: any) => {
                         }}>☰</div>
                         <div className='page-header__logo'>
                             <span className='logo'>
-                                <span onClick={() => navigate('/')}> <FaReact className='rotate icon-react' />Ghost !T</span>
+                                <span onClick={() => navigate('/')}> <FaReact className='rotate icon-react' />Hỏi Dân !T</span>
 
                                 <VscSearchFuzzy className='icon-search' />
                             </span>
                             <input
                                 className="input-search" type={'text'}
                                 placeholder="Bạn tìm gì hôm nay"
-                            // value={props.searchTerm}
-                            // onChange={(e) => props.setSearchTerm(e.target.value)}
+                                value={props.searchTerm}
+                                onChange={(e) => props.setSearchTerm(e.target.value)}
                             />
                         </div>
 
@@ -116,21 +126,33 @@ const AppHeader = (props: any) => {
                     <nav className="page-header__bottom">
                         <ul id="navigation" className="navigation">
                             <li className="navigation__item">
-                                <Popover
-                                    className="popover-carts"
-                                    placement="topRight"
-                                    rootClassName="popover-carts"
-                                    title={"Sản phẩm mới thêm"}
-                                    content={contentPopover}
-                                    arrow={true}>
+                                {!isMobile
+                                    ?
+                                    <Popover
+                                        className="popover-carts"
+                                        placement="topRight"
+                                        rootClassName="popover-carts"
+                                        title={"Sản phẩm mới thêm"}
+                                        content={contentPopover}
+                                        arrow={true}>
+                                        <Badge
+                                            count={carts?.length ?? 0}
+                                            size={"small"}
+                                            showZero
+                                        >
+                                            <FiShoppingCart className='icon-cart' />
+                                        </Badge>
+                                    </Popover>
+                                    :
                                     <Badge
                                         count={carts?.length ?? 0}
                                         size={"small"}
                                         showZero
+                                        onClick={() => navigate("/order")}
                                     >
                                         <FiShoppingCart className='icon-cart' />
                                     </Badge>
-                                </Popover>
+                                }
                             </li>
                             <li className="navigation__item mobile"><Divider type='vertical' /></li>
                             <li className="navigation__item mobile">
@@ -161,7 +183,6 @@ const AppHeader = (props: any) => {
                 <p onClick={() => handleLogout()}>Đăng xuất</p>
                 <Divider />
             </Drawer>
-
 
             <ManageAccount
                 isModalOpen={openManageAccount}

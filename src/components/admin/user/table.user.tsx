@@ -150,7 +150,7 @@ const TableUser = () => {
                 actionRef={actionRef}
                 cardBordered
                 request={async (params, sort, filter) => {
-                    console.log(params, sort, filter);
+                    // console.log(params, sort, filter);
                     let query = "";
                     if (params) {
                         query += `current=${params.current}&pageSize=${params.pageSize}`
@@ -202,16 +202,16 @@ const TableUser = () => {
                 toolBarRender={() => [
 
                     <CSVLink
-                    data={currentDataTable}
-                    filename='export-user.csv'
-                >
-                    <Button
-                        icon={<ExportOutlined />}
-                        type="primary"
+                        data={currentDataTable}
+                        filename='export-user.csv'
                     >
-                        Export
-                    </Button>
-                </CSVLink>,
+                        <Button
+                            icon={<ExportOutlined />}
+                            type="primary"
+                        >
+                            Export
+                        </Button>
+                    </CSVLink>,
 
                     <Button
                         icon={<CloudUploadOutlined />}
@@ -251,7 +251,7 @@ const TableUser = () => {
                 openModalImport={openModalImport}
                 setOpenModalImport={setOpenModalImport}
                 refreshTable={refreshTable}
-        />
+            />
             <UpdateUser
                 openModalUpdate={openModalUpdate}
                 setOpenModalUpdate={setOpenModalUpdate}

@@ -24,7 +24,7 @@ const ImportUser = (props: IProps) => {
         onChange(info) {
             const { status } = info.file;
             if (status !== 'uploading') {
-                console.log(info.file, info.fileList);
+                // console.log(info.file, info.fileList);
             }
             if (status === 'done') {
                 message.success(`${info.file.name} file uploaded successfully.`);
@@ -33,7 +33,7 @@ const ImportUser = (props: IProps) => {
             }
         },
         onDrop(e) {
-            console.log('Dropped files', e.dataTransfer.files);
+            // console.log('Dropped files', e.dataTransfer.files);
         },
     };
     return (
